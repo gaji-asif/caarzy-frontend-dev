@@ -1,0 +1,23 @@
+name: CI/CD Pipeline
+on:
+  push:
+    branches: [ master, dev ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ github.ref == 'refs/heads/master' && secrets.PROD_HOST || secrets.DEV_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/html/caarzy-frontend-dev/
+            git pull origin ${{ github.ref_name }}
+            docker-compose down
+            docker-compose up -d --build
