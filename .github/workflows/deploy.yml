@@ -3,7 +3,11 @@ name: CI/CD Pipeline
 =======
 
 
+<<<<<<< HEAD
 >>>>>>> 9ed44b6 (conflict resolve)
+=======
+>>>>>>> ba49e58 (conflict resolve)
+>>>>>>> e2a7ce6 (conflict resolve again)
 on:
   push:
     branches: [ master, dev ]
