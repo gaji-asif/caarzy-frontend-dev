@@ -1,4 +1,9 @@
 name: CI/CD Pipeline
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 9ed44b6 (conflict resolve)
 on:
   push:
     branches: [ master, dev ]
