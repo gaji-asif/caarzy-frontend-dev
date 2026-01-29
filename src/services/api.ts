@@ -152,7 +152,10 @@ export const authAPI = {
     }
 
     try {
-      const response = await apiClient.post('api/login', credentials);
+      const endpoint = 'api/login';
+      console.log('🔐 Attempting login at:', `${API_CONFIG.BASE_URL}${endpoint}`, credentials);
+      const response = await apiClient.post(endpoint, credentials);
+      console.log('✅ Login response:', response.data);
 
       // Backend may return a shape like:
       // {
