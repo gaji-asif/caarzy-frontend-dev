@@ -44,12 +44,15 @@ const Register = () => {
     setIsLoading(true);
 
     try {
-      // Call the real API endpoint
-      const response = await apiClient.post('api/register', {
+      // Call the real API endpoint with correct request body format
+      const endpoint = 'api/register';
+      console.log('📝 Attempting registration at:', endpoint);
+      
+      const response = await apiClient.post(endpoint, {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        confirmPassword: formData.confirmPassword,
+        password_confirmation: formData.confirmPassword,
       });
 
       const data = response.data;
