@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { User, Mail, Phone, Lock, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { authAPI } from "@/lib/api";
+import apiClient from "@/services/api";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -44,36 +44,43 @@ const Register = () => {
     setIsLoading(true);
 
     try {
-      const response = await authAPI.register({
+      // Call the real API endpoint with correct request body format
+      const endpoint = 'api/register';
+      console.log('📝 Attempting registration at:', endpoint);
+      
+      const response = await apiClient.post(endpoint, {
+        name: formData.name,
         email: formData.email,
         password: formData.password,
-        confirmPassword: formData.confirmPassword,
+        password_confirmation: formData.confirmPassword,
       });
 
-      if (response.success) {
+      const data = response.data;
+
+      if (data.success || response.status === 201 || response.status === 200) {
         toast({
           title: "Success",
-          description: response.message,
+          description: data.message || "Registration successful",
         });
-        // Store token in localStorage
-        if (response.token) {
-          localStorage.setItem('authToken', response.token);
-        }
+        
+        // Redirect to login page
         navigate("/login");
       } else {
         toast({
           title: "Error",
-          description: response.message,
+          description: data.message || "Registration failed",
           variant: "destructive",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || error.message || "An error occurred during registration";
+      
       toast({
         title: "Error",
-        description: "An error occurred during registration",
+        description: errorMessage,
         variant: "destructive",
       });
-      console.error("Registration error:", error);
+      console.error("❌ Registration error:", error);
     } finally {
       setIsLoading(false);
     }

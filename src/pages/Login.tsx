@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { authAPI } from "@/lib/api";
+import apiClient from "@/services/api";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -30,34 +30,48 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const response = await authAPI.login(formData);
+      // Call the real API endpoint
+      const response = await apiClient.post('api/login', {
+        email: formData.email,
+        password: formData.password,
+      });
 
-      if (response.success) {
+      const data = response.data;
+
+      // Extract token and user from response
+      const token = data.token || data.access_token;
+      const user = data.data || data.user;
+
+      if (token && user) {
+        // Store token in localStorage
+        localStorage.setItem('authToken', token);
+        if (user) {
+          localStorage.setItem('user', JSON.stringify(user));
+        }
+
         toast({
           title: "Success",
-          description: response.message,
+          description: "Login successful",
         });
-        // Store token in localStorage
-        if (response.token) {
-          localStorage.setItem('authToken', response.token);
-          console.log('Token stored:', response.token);
-        }
-        console.log('Navigating to dashboard...');
+
+        console.log('✅ Login successful, navigating to dashboard...');
         navigate("/dashboard");
       } else {
         toast({
           title: "Error",
-          description: response.message,
+          description: "Invalid response from server",
           variant: "destructive",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || error.message || "An error occurred during login";
+      
       toast({
         title: "Error",
-        description: "An error occurred during login",
+        description: errorMessage,
         variant: "destructive",
       });
-      console.error("Login error:", error);
+      console.error("❌ Login error:", error);
     } finally {
       setIsLoading(false);
     }

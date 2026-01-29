@@ -1,6 +1,5 @@
-import { ReactNode, FC } from 'react';
+import { ReactNode, FC, useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
 import { Skeleton } from '@/components/ui/skeleton';
 
 /**
@@ -17,10 +16,16 @@ interface ProtectedRouteProps {
  * Shows loading skeleton while checking authentication
  */
 const ProtectedRoute: FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    // Check if user has a valid token in localStorage
+    const token = localStorage.getItem('authToken');
+    setIsAuthenticated(!!token);
+  }, []);
 
   // Show loading skeleton while checking auth status
-  if (isLoading) {
+  if (isAuthenticated === null) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="w-full max-w-4xl px-4 space-y-4">

@@ -1,7 +1,6 @@
-import { FC, useCallback } from 'react';
+import { FC, useCallback, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Globe, ChevronDown, User, LogOut } from "lucide-react";
-import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
@@ -17,15 +16,41 @@ import {
  */
 const Header: FC = () => {
   const navigate = useNavigate();
-  const { user, logout, isAuthenticated } = useAuth();
   const { toast } = useToast();
+  const [user, setUser] = useState<any>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Load user from localStorage on mount
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    const userStr = localStorage.getItem('user');
+    
+    if (token && userStr) {
+      try {
+        const userData = JSON.parse(userStr);
+        setUser(userData);
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error('Failed to parse user data:', error);
+        setIsAuthenticated(false);
+      }
+    } else {
+      setIsAuthenticated(false);
+    }
+  }, []);
 
   /**
    * Handle logout action
    */
   const handleLogout = useCallback((): void => {
     try {
-      logout();
+      // Clear localStorage
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+      
+      // Reset state
+      setUser(null);
+      setIsAuthenticated(false);
       
       toast({
         title: 'Logged out',
@@ -43,7 +68,7 @@ const Header: FC = () => {
         variant: 'destructive',
       });
     }
-  }, [logout, navigate, toast]);
+  }, [navigate, toast]);
 
   /**
    * Get user display name
