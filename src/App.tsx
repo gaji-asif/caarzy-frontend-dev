@@ -8,6 +8,7 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import { AuthProvider } from "@/context/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
+import Login from "./pages/Login";
 import CarCondition from "./pages/CarCondition";
 import PriceRange from "./pages/PriceRange";
 import FuelType from "./pages/FuelType";
@@ -32,28 +33,38 @@ const queryClient = new QueryClient({
   },
 });
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/car-condition" element={<CarCondition />} />
-          <Route path="/price-range" element={<PriceRange />} />
-          <Route path="/fuel-type" element={<FuelType />} />
-          <Route path="/car-brand" element={<CarBrand />} />
-          <Route path="/search-results" element={<SearchResults />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+/**
+ * Main App Component
+ * Provides all necessary providers and routes
+ */
+const App: FC = () => (
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <AuthProvider>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/login" element={<Login />} />
+              
+              {/* Protected Routes */}
+              <Route path="/" element={<Index /> }/>
+              <Route path="/car-condition" element={<ProtectedRoute><CarCondition /></ProtectedRoute>} />
+              <Route path="/price-range" element={<ProtectedRoute><PriceRange /></ProtectedRoute>} />
+              <Route path="/fuel-type" element={<ProtectedRoute><FuelType /></ProtectedRoute>} />
+              <Route path="/car-brand" element={<ProtectedRoute><CarBrand /></ProtectedRoute>} />
+              <Route path="/search-results" element={<ProtectedRoute><SearchResults /></ProtectedRoute>} />
+              
+              {/* Catch-all route - 404 Not Found */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AuthProvider>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;
