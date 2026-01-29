@@ -25,9 +25,19 @@ const Login = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+<<<<<<< HEAD
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+=======
+  
+  // Clear auth error when user starts typing
+  useEffect(() => {
+    if (authError) {
+      clearErrors();
+    }
+  }, [authError, clearErrors]);
+>>>>>>> d8a66e6 (Space added two)
 
     try {
       const response = await authAPI.login(formData);

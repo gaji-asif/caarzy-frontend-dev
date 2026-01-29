@@ -18,6 +18,7 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
 
+
 /**
  * Create Query Client instance
  * Used for server state management with React Query
