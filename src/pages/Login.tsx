@@ -91,11 +91,6 @@ const Login = () => {
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
             <CardDescription>Login to your account</CardDescription>
-            <div className="mt-4 p-3 bg-muted rounded-md text-sm">
-              <p className="font-medium mb-1">Test Credentials:</p>
-              <p>Email: user@example.com</p>
-              <p>Password: password123</p>
-            </div>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -141,24 +136,13 @@ const Login = () => {
               </div>
 
               <div className="flex justify-end">
-                <Link to="/forgot-password" className="text-sm text-primary hover:underline">
+                {/* <Link to="/forgot-password" className="text-sm text-primary hover:underline">
                   Forgot password?
-                </Link>
+                </Link> */}
               </div>
 
               <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={isLoading}>
                 {isLoading ? "Logging in..." : "Login"}
-              </Button>
-
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full"
-                onClick={() => {
-                  setFormData({ email: "user@example.com", password: "password123" });
-                }}
-              >
-                Use Test Credentials
               </Button>
 
               <p className="text-center text-sm text-muted-foreground">
