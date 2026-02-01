@@ -2,6 +2,7 @@ import { FC, useCallback, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Globe, ChevronDown, User, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useToastConfig } from "@/hooks/useToastConfig";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +18,7 @@ import {
 const Header: FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { duration: toastDuration } = useToastConfig();
   const [user, setUser] = useState<any>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -55,6 +57,7 @@ const Header: FC = () => {
       toast({
         title: 'Logged out',
         description: 'You have been successfully logged out.',
+        duration: toastDuration,
       });
 
       // Redirect to login page
@@ -66,9 +69,10 @@ const Header: FC = () => {
         title: 'Logout error',
         description: 'An error occurred while logging out.',
         variant: 'destructive',
+        duration: toastDuration,
       });
     }
-  }, [navigate, toast]);
+  }, [navigate, toast, toastDuration]);
 
   /**
    * Get user display name

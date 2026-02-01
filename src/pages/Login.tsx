@@ -8,11 +8,13 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useToastConfig } from "@/hooks/useToastConfig";
 import apiClient from "@/services/api";
 
 const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { duration: toastDuration } = useToastConfig();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -52,6 +54,7 @@ const Login = () => {
         toast({
           title: "Success",
           description: "Login successful",
+          duration: toastDuration,
         });
 
         console.log('✅ Login successful, navigating to dashboard...');
@@ -61,6 +64,7 @@ const Login = () => {
           title: "Error",
           description: "Invalid response from server",
           variant: "destructive",
+          duration: toastDuration,
         });
       }
     } catch (error: any) {
@@ -70,6 +74,7 @@ const Login = () => {
         title: "Error",
         description: errorMessage,
         variant: "destructive",
+        duration: toastDuration,
       });
       console.error("❌ Login error:", error);
     } finally {
