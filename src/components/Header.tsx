@@ -1,7 +1,10 @@
 import { FC, useCallback, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Globe, ChevronDown, User, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { useToastConfig } from "@/hooks/useToastConfig";
+import { ASSETS } from "@/config/assets";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +20,7 @@ import {
 const Header: FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { duration: toastDuration } = useToastConfig();
   const [user, setUser] = useState<any>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -55,6 +59,7 @@ const Header: FC = () => {
       toast({
         title: 'Logged out',
         description: 'You have been successfully logged out.',
+        duration: toastDuration,
       });
 
       // Redirect to login page
@@ -66,9 +71,10 @@ const Header: FC = () => {
         title: 'Logout error',
         description: 'An error occurred while logging out.',
         variant: 'destructive',
+        duration: toastDuration,
       });
     }
-  }, [navigate, toast]);
+  }, [navigate, toast, toastDuration]);
 
   /**
    * Get user display name
@@ -90,10 +96,18 @@ const Header: FC = () => {
         <div className="flex items-center justify-between">
           {/* Logo with Subtitle */}
           <div className="flex flex-col">
-            <h1 className="text-2xl md:text-3xl font-heading font-bold tracking-tight">
-              <span className="text-foreground">Caa</span>
-              <span className="text-primary">rzy</span>
-            </h1>
+            { ASSETS.logos.main ? (
+              <img 
+                src={ASSETS.logos.main} 
+                alt="Caarzy Logo" 
+                className="h-10 md:h-12 w-auto"
+              />
+            ) : (
+              <h1 className="text-2xl md:text-3xl font-heading font-bold tracking-tight">
+                <span className="text-foreground">Caa</span>
+                <span className="text-primary">rzy</span>
+              </h1>
+            )}
             <p className="text-muted-foreground text-xs md:text-sm font-medium">
               Your All-in-One Car Marketplace
             </p>
@@ -102,7 +116,7 @@ const Header: FC = () => {
           {/* Right Side - Language & User Menu */}
           <div className="flex items-center gap-2 md:gap-4">
             {/* Language Selector */}
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                   <Globe className="w-5 h-5 text-primary" />
@@ -124,7 +138,28 @@ const Header: FC = () => {
                   <span className="mr-2">🇩🇪</span> Deutsch
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
+
+            {/* Login & Register Buttons - Only show if NOT authenticated */}
+            {!isAuthenticated && (
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate("/login")}
+                  className="hidden sm:inline-flex"
+                >
+                  Login
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => navigate("/register")}
+                  className="bg-primary hover:bg-primary/90"
+                >
+                  Sign Up
+                </Button>
+              </div>
+            )}
 
             {/* User Menu - Only show if authenticated */}
             {isAuthenticated && user && (

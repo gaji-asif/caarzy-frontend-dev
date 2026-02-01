@@ -6,21 +6,21 @@ const features = [
     title: "Trusted Listings",
     subtitle: "Verified & Secure",
     description:
-      "Every vehicle on Caarzy goes through a rigorous verification process. Browse with confidence knowing all listings are authentic and sellers are verified.",
+      "Verified cars from reliable sellers",
   },
   {
     icon: BadgeDollarSign,
     title: "Best Value Deals",
     subtitle: "Competitive Pricing",
     description:
-      "Our smart pricing algorithm ensures you get the best market rates. Compare prices instantly and never overpay for your next vehicle.",
+      "Competitive & Dynamic pricing for buyers and sellers.",
   },
   {
     icon: Handshake,
     title: "Seamless Transactions",
     subtitle: "Easy & Fast",
     description:
-      "From browsing to ownership, we make every step simple. Secure payments, digital paperwork, and dedicated support throughout your journey.",
+      "Secure payments and hassle free processes.",
   },
 ];
 

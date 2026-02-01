@@ -8,11 +8,13 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { User, Mail, Phone, Lock, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useToastConfig } from "@/hooks/useToastConfig";
 import apiClient from "@/services/api";
 
 const Register = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { duration: toastDuration } = useToastConfig();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,6 +39,7 @@ const Register = () => {
         title: "Error",
         description: "Passwords do not match",
         variant: "destructive",
+        duration: toastDuration,
       });
       return;
     }
@@ -61,6 +64,7 @@ const Register = () => {
         toast({
           title: "Success",
           description: data.message || "Registration successful",
+          duration: toastDuration,
         });
         
         // Redirect to login page
@@ -70,6 +74,7 @@ const Register = () => {
           title: "Error",
           description: data.message || "Registration failed",
           variant: "destructive",
+          duration: toastDuration,
         });
       }
     } catch (error: any) {
@@ -79,6 +84,7 @@ const Register = () => {
         title: "Error",
         description: errorMessage,
         variant: "destructive",
+        duration: toastDuration,
       });
       console.error("❌ Registration error:", error);
     } finally {
