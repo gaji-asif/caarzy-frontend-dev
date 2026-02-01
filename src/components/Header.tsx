@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Globe, ChevronDown, User, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useToastConfig } from "@/hooks/useToastConfig";
+import { ASSETS } from "@/config/assets";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -94,10 +95,18 @@ const Header: FC = () => {
         <div className="flex items-center justify-between">
           {/* Logo with Subtitle */}
           <div className="flex flex-col">
-            <h1 className="text-2xl md:text-3xl font-heading font-bold tracking-tight">
-              <span className="text-foreground">Caa</span>
-              <span className="text-primary">rzy</span>
-            </h1>
+            { ASSETS.logos.main ? (
+              <img 
+                src={ASSETS.logos.main} 
+                alt="Caarzy Logo" 
+                className="h-10 md:h-12 w-auto"
+              />
+            ) : (
+              <h1 className="text-2xl md:text-3xl font-heading font-bold tracking-tight">
+                <span className="text-foreground">Caa</span>
+                <span className="text-primary">rzy</span>
+              </h1>
+            )}
             <p className="text-muted-foreground text-xs md:text-sm font-medium">
               Your All-in-One Car Marketplace
             </p>
