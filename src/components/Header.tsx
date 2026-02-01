@@ -1,6 +1,7 @@
 import { FC, useCallback, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Globe, ChevronDown, User, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useToastConfig } from "@/hooks/useToastConfig";
 import { ASSETS } from "@/config/assets";
@@ -115,7 +116,7 @@ const Header: FC = () => {
           {/* Right Side - Language & User Menu */}
           <div className="flex items-center gap-2 md:gap-4">
             {/* Language Selector */}
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                   <Globe className="w-5 h-5 text-primary" />
@@ -137,7 +138,28 @@ const Header: FC = () => {
                   <span className="mr-2">🇩🇪</span> Deutsch
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
+
+            {/* Login & Register Buttons - Only show if NOT authenticated */}
+            {!isAuthenticated && (
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate("/login")}
+                  className="hidden sm:inline-flex"
+                >
+                  Login
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => navigate("/register")}
+                  className="bg-primary hover:bg-primary/90"
+                >
+                  Sign Up
+                </Button>
+              </div>
+            )}
 
             {/* User Menu - Only show if authenticated */}
             {isAuthenticated && user && (
