@@ -17,6 +17,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
+import MultiSearchPage from "./pages/MultiSearchPage";
 
 /**
  * Create Query Client instance
@@ -54,6 +55,7 @@ const App: FC = () => (
               
               {/* Protected Search Routes */}
               <Route path="/" element={<Index /> }/>
+              <Route path="/multi-search" element={<ProtectedRoute><MultiSearchPage /></ProtectedRoute>} />
               <Route path="/car-condition" element={<ProtectedRoute><CarCondition /></ProtectedRoute>} />
               <Route path="/price-range" element={<ProtectedRoute><PriceRange /></ProtectedRoute>} />
               <Route path="/fuel-type" element={<ProtectedRoute><FuelType /></ProtectedRoute>} />

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, Heart, Fuel, Gauge, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
@@ -66,7 +66,55 @@ const sampleCars: CarListing[] = [
 
 const SearchResults = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [favorites, setFavorites] = useState<number[]>([]);
+
+  // Read query params and filter sample data
+  const params = new URLSearchParams(location.search);
+  const qFuel = params.get("fuelType") || "";
+  const qFuelList = qFuel ? qFuel.split(",").map((s) => s.toLowerCase()) : [];
+  const qBody = params.get("bodyType") || "";
+  const qBodyList = qBody ? qBody.split(",").map((s) => s.toLowerCase()) : [];
+  const qBrand = params.get("brand") || "";
+  const qMin = params.get("minPrice");
+  const qMax = params.get("maxPrice");
+  const qMileage = params.get("mileage") || "";
+
+  const parseMileageNumber = (m?: string) => {
+    if (!m) return 0;
+    const digits = m.replace(/[^0-9]/g, "");
+    return parseInt(digits || "0", 10);
+  };
+
+  const filteredCars = sampleCars.filter((car) => {
+    // fuel filter
+    if (qFuelList.length && !qFuelList.includes(car.fuelType.toLowerCase())) return false;
+
+    // brand filter (match by name)
+    if (qBrand && !car.name.toLowerCase().includes(qBrand.toLowerCase())) return false;
+
+    // price filter
+    const min = qMin ? parseInt(qMin, 10) : undefined;
+    const max = qMax ? parseInt(qMax, 10) : undefined;
+    if (min !== undefined && car.price < min) return false;
+    if (max !== undefined && car.price > max) return false;
+
+    // body filter (only if car has bodyType property)
+    if (qBodyList.length && (car as any).bodyType) {
+      const carBody = ((car as any).bodyType || "").toLowerCase();
+      if (!qBodyList.includes(carBody)) return false;
+    }
+
+    // mileage filter
+    if (qMileage) {
+      const carMileage = parseMileageNumber(car.mileage);
+      if (qMileage === "<20000" && !(carMileage < 20000)) return false;
+      if (qMileage === "20000-50000" && !(carMileage >= 20000 && carMileage <= 50000)) return false;
+      if (qMileage === ">50000" && !(carMileage > 50000)) return false;
+    }
+
+    return true;
+  });
 
   const toggleFavorite = (carId: number) => {
     setFavorites((prev) =>
@@ -87,13 +135,13 @@ const SearchResults = () => {
               Search Results
             </h1>
             <p className="text-muted-foreground">
-              Found {sampleCars.length} cars matching your criteria
+              Found {filteredCars.length} cars matching your criteria
             </p>
           </div>
 
           {/* Car Listings */}
           <div className="space-y-4 mb-6">
-            {sampleCars.map((car) => (
+            {filteredCars.map((car) => (
               <div
                 key={car.id}
                 className="bg-card rounded-xl shadow-card overflow-hidden flex flex-col md:flex-row"
@@ -175,11 +223,11 @@ const SearchResults = () => {
 
           {/* Back Button */}
           <Button
-            onClick={() => navigate("/car-brand")}
+            onClick={() => navigate("/multi-search")}
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-6"
           >
             <ArrowLeft className="w-5 h-5 mr-2" />
-            Back to Brand Selection
+            Back to Multi Search
           </Button>
         </div>
       </main>

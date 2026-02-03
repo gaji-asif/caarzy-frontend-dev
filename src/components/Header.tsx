@@ -163,7 +163,11 @@ const Header: FC = () => {
 
             {/* User Menu - Only show if authenticated */}
             {isAuthenticated && user && (
-              <DropdownMenu>
+              <div className="flex items-center gap-2">
+                <Button size="sm" onClick={() => navigate('/multi-search')} className="hidden sm:inline-flex bg-primary hover:bg-primary/90">
+                  Find Your Dream Car
+                </Button>
+                <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                     <User className="w-5 h-5 text-primary" />
@@ -197,7 +201,8 @@ const Header: FC = () => {
                     <span>Sign Out</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
-              </DropdownMenu>
+                </DropdownMenu>
+              </div>
             )}
           </div>
         </div>
