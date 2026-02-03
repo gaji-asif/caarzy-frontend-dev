@@ -165,7 +165,7 @@ const Header: FC = () => {
             {isAuthenticated && user && (
               <div className="flex items-center gap-2">
                 <Button size="sm" onClick={() => navigate('/multi-search')} className="hidden sm:inline-flex bg-primary hover:bg-primary/90">
-                  Multi Search
+                  Find Your Dream Car
                 </Button>
                 <DropdownMenu>
                 <DropdownMenuTrigger asChild>
