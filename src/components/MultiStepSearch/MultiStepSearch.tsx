@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Step1Condition from "./Step1Condition";
@@ -7,6 +7,8 @@ import Step3FuelBody from "./Step3FuelBody";
 import Step4Brand from "./Step4Brand";
 import Step5Mileage from "./Step5Mileage";
 import Step6Review from "./Step6Review";
+import { useToast } from "@/hooks/use-toast";
+import apiClient from "@/services/api";
 
 const fuelTypes = [
   { id: "petrol", label: "Petrol" },
@@ -26,16 +28,7 @@ const bodyTypes = [
   { id: "truck", label: "Truck" },
 ];
 
-const carBrands = [
-  "Audi", "BMW", "Mercedes-Benz", "Toyota", "Honda", "Ford",
-  "Chevrolet", "Volkswagen", "Nissan", "Hyundai", "Kia", "Mazda",
-  "Subaru", "Lexus", "Porsche", "Ferrari", "Lamborghini", "Jaguar",
-  "Land Rover", "Volvo", "Tesla", "Jeep", "Dodge", "Ram",
-  "Cadillac", "Buick", "GMC", "Chrysler", "Acura", "Infiniti",
-  "Lincoln", "Alfa Romeo", "Maserati", "Bentley", "Rolls-Royce", "Aston Martin",
-  "McLaren", "Bugatti", "Peugeot", "Renault", "Citroën", "Fiat",
-  "Skoda", "Seat", "Mini", "Mitsubishi", "Suzuki", "Isuzu"
-];
+const FALLBACK_BRANDS = [];
 
 const STEP_TITLES: Record<number, string> = {
   1: "Select car condition",
@@ -56,6 +49,56 @@ const MultiStepSearch: FC = () => {
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [allBrandsSelected, setAllBrandsSelected] = useState(false);
   const [mileageRange, setMileageRange] = useState("");
+  const [carBrands, setCarBrands] = useState<string[]>(FALLBACK_BRANDS);
+  const [loadingBrands, setLoadingBrands] = useState(false);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    let mounted = true;
+    setLoadingBrands(true);
+    
+    const fetchBrands = async () => {
+        try {
+        const token = localStorage.getItem("authToken");
+        const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+        const res = await apiClient.get("api/all-car-models", { headers });
+        if (!mounted) return;
+
+        const data = res.data;
+        let brands: string[] = [];
+
+        // API may return { data: [...] } where each item has a `name` field
+        if (Array.isArray(data?.data)) {
+          brands = data.data.map((item: any) => String(item.name));
+        } else if (Array.isArray(data?.brands)) {
+          brands = data.brands.map(String);
+        } else if (Array.isArray(data)) {
+          brands = data.map(String);
+        }
+
+        if (brands.length === 0) {
+            console.warn("API returned empty brand list, using fallback");
+            brands = FALLBACK_BRANDS;
+        }
+
+        setCarBrands(brands);
+        } catch (err) {
+        console.error("Failed to fetch car brands:", err);
+        toast({
+            title: "Could not load brands",
+            description: "Using default brand list.",
+            variant: "destructive",
+        });
+        setCarBrands(FALLBACK_BRANDS);
+        } finally {
+        if (mounted) setLoadingBrands(false);
+        }
+    };
+
+    fetchBrands();
+
+    return () => { mounted = false; };
+    }, [toast]);
 
   const next = () => setStep((s) => Math.min(6, s + 1));
   const prev = () => setStep((s) => Math.max(1, s - 1));
